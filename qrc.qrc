@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qrc/close-square.png</file>
+        <file>qrc/minus-square.png</file>
+    </qresource>
+</RCC>
