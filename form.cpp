@@ -10,22 +10,31 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QPainter>
+#include <QSettings>
 
-Form::Form(QWidget *parent) : QWidget(parent), ui(new Ui::Form), currentIndex(0), limitNumber(9) {
+#include <math.h>
+
+Form::Form(QWidget *parent) : QWidget(parent), ui(new Ui::Form), currentIndex(0), limitNumber(9), m_interval(30) {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
+
     this->showMaximized();
     connect(&manager, SIGNAL(finished(QNetworkReply *)), SLOT(downloadFinished(QNetworkReply *)));
 
     changedTimer = new QTimer(this);
     connect(changedTimer, SIGNAL(timeout()), this, SLOT(slotUpdate()));
 
-    widegetList = ui->stackedWidget->widget(0)->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
-    widegetTwoList = ui->stackedWidget->widget(1)->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
+    loadInI();
 
+    for (int i = 0; i < limitNumber * 2; ++i) {
+        auto play = new PlayerWindow(this);
+        play->hide();
+        playList.append(play);
+    }
+    initPlayWidget();
     connect(ui->widgetTitle, &TitleWidget::signalMin, this, &Form::showMinimized);
     connect(ui->widgetTitle, &TitleWidget::signalClose, this, &Form::close);
-    setWindowTitle("SimplePlayer");
+
     QTimer::singleShot(300, this, SLOT(getDevSNlist()));
     // 1.
     // getDevSNlist();
@@ -51,11 +60,10 @@ void Form::getDevSNlist() {
     }
 
     file.close();
-    qDebug() << " getlistNumber" << devSNList.count();
+    qDebug() << " getlistNumber  begin" << devSNList.count() << QTime::currentTime().toString("hh:mm:ss.zzz");
 
-    ui->widgetTitle->setTitleInfo("SimplePlayer");
+    // ui->widgetTitle->setTitleInfo("SimplePlayer");
     slotUpdate();
-    changedTimer->start(1000 * 30); // 30S
 }
 
 void Form::getDevInfo(int currentIndex, int limitNumber) {
@@ -129,10 +137,61 @@ void Form::slotGetRtmpUrRetl() {
 }
 
 void Form::slotChanged() {
-    int index = ui->stackedWidget->currentIndex();
-    ui->stackedWidget->setCurrentIndex(index > 0 ? 0 : 1);
+
     qDebug() << "Form::slotChanged stackedWidget  end ********" << ui->stackedWidget->currentIndex()
              << QTime::currentTime().toString("hh:mm:ss.zzz");
+    if (!changedTimer->isActive()) {
+        changedTimer->start(1000 * m_interval); // 30S
+    }
+
+    int index = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(index > 0 ? 0 : 1);
+}
+
+void Form::loadInI() {
+    QSettings settings("Setting.ini", QSettings::IniFormat);
+    QString title = settings.value("Title").toString();
+    m_interval = settings.value("Interval").toInt();
+    limitNumber = settings.value("Number").toInt();
+    ui->widgetTitle->setTitleInfo(title);
+    setWindowTitle(title);
+
+    qDebug() << "Form::loadInI " << title << m_interval << limitNumber;
+}
+
+void Form::saveInI() const {
+
+    int number = 9;
+    QSettings settings("Setting.ini", QSettings::IniFormat);
+    settings.setValue("Number", number);
+}
+
+void Form::initPlayWidget() {
+    int count = 0;
+    int row = 0;                  // 行列
+    int column = 0;               // 列
+    int index = 0;                // 起始位置
+    int iRow = sqrt(limitNumber); // 每行最大窗口数量
+
+    for (int i = 0; i < limitNumber; ++i) {
+        if (i >= index) {
+            ui->gridLayoutOne->addWidget(playList.at(i), row, column);
+            ui->gridLayoutTwo->addWidget(playList.at(i + limitNumber), row, column);
+            playList.at(i)->setVisible(true);
+            playList.at(i + limitNumber)->setVisible(true);
+            count++;
+            column++;
+            //  换行
+            if (column == iRow) {
+                row++;
+                column = 0;
+            }
+        }
+
+        if (count == (iRow * iRow)) {
+            break;
+        }
+    }
 }
 
 void Form::paintEvent(QPaintEvent *e) {
@@ -146,15 +205,28 @@ void Form::resizeEvent(QResizeEvent *e) {
     Q_UNUSED(e);
 
     QWidget::resizeEvent(e);
-    /*
-    for(int i=0;  i<widegetList.size(); ++i )
-    {
-        VlcPlayerWidget  *play = qobject_cast< VlcPlayerWidget *>(widegetList.at(i));
-        if(play !=nullptr)
-        {
-            play->updateRatio();
-        }
-    }*/
+}
+
+void Form::mousePressEvent(QMouseEvent *event) {
+    //只能是鼠标左键移动和改变大小
+    if (event->button() == Qt::LeftButton) {
+        mouse_press = true;
+    }
+
+    //窗口移动距离
+    move_point = event->globalPos() - pos();
+}
+
+void Form::mouseReleaseEvent(QMouseEvent *event) {
+    mouse_press = false;
+}
+
+void Form::mouseMoveEvent(QMouseEvent *event) {
+    //移动窗口
+    if (mouse_press) {
+        QPoint move_pos = event->globalPos();
+        move(move_pos - move_point);
+    }
 }
 
 void Form::downloadFinished(QNetworkReply *reply) {
@@ -197,7 +269,7 @@ void Form::downloadFinished(QNetworkReply *reply) {
                 }
                 // qDebug() << " deviceMac" << tmpStatus.deviceMac << " connectionStatus" << tmpStatus.connectionStatus
                 //          << " streamStatus" << tmpStatus.streamStatus;
-                QCoreApplication::processEvents();
+                // QCoreApplication::processEvents();
             }
             // qDebug() << "Form::downloadFinished  getdata" << QTime::currentTime().toString("hh:mm:ss.zzz");
 
@@ -221,7 +293,7 @@ void Form::downloadFinished(QNetworkReply *reply) {
                 devUrlMessageHash.insert(mac, url);
             }
 
-            QCoreApplication::processEvents();
+            // QCoreApplication::processEvents();
             // qDebug() << "mac   is:" << mac << "rtmpUrl" << url.rtmpUrl;
             // qDebug() << "Form::downloadFinished  geturlMessage" << QTime::currentTime().toString("hh:mm:ss.zzz");
             slotPlay();
@@ -251,20 +323,13 @@ void Form::slotPlay() {
     }
 
     int index = ui->stackedWidget->currentIndex();
-
-    auto &list = index > 0 ? widegetList : widegetTwoList;
-    if (devUrlMessageHash.count() <= widegetList.count()) {
+    auto list = playList.mid((index > 0 ? 0 : limitNumber), limitNumber);
+    if (devUrlMessageHash.count() <= list.count()) {
         int i = 0;
         foreach (auto &url, devUrlMessageHash.values()) {
-
-            // FormPlay  *play = qobject_cast< FormPlay *>(widegetList.at(i));
-            // VlcPlayerWidget *play = qobject_cast<VlcPlayerWidget *>(list.at(i));
             PlayerWindow *play = qobject_cast<PlayerWindow *>(list.at(i));
             if (play != nullptr) {
                 QString mac = devUrlMessageHash.keys().at(i);
-                // play->showTitle(mac);
-                // play->updateRatio();
-                // play->playUrlFile(url.rtmpUrl);
                 play->showDevSn(mac);
                 play->playUrl(url.rtmpUrl);
                 // qDebug() << " Form::slotPlay mac  " << mac << "url.rtmpUrl" << url.rtmpUrl << QTime::currentTime().toString("hh:mm:ss.zzz");
@@ -273,7 +338,7 @@ void Form::slotPlay() {
         }
     }
 
-    QTimer::singleShot(5000, this, SLOT(slotChanged()));
+    QTimer::singleShot(8000, this, SLOT(slotChanged()));
     qDebug() << " Form::slotPlay" << devUrlMessageHash.count() << QTime::currentTime().toString("hh:mm:ss.zzz");
     // ui->widget->playUrl(subObj.value("rtmpUrl").toString());
 }

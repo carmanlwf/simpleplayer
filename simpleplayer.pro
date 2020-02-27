@@ -7,6 +7,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 } else {
   CONFIG += avwidgets
 }
+
 CONFIG += c++11
 LIBS += -L$$PWD/"3rdparty/qtav/lib" -llibQtAV1 -llibQtAVWidgets1
 include(src.pri)

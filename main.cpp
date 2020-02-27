@@ -72,6 +72,11 @@ int main(int argc, char *argv[]) {
 
     QApplication::setAttribute(Qt::AA_UseOpenGLES);
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling); // highDpi
+#endif
+
     QApplication a(argc, argv);
 
     QString logfile(QString::fromLatin1("%1/log.txt").arg(qApp->applicationDirPath()));
@@ -84,6 +89,10 @@ int main(int argc, char *argv[]) {
             qWarning() << "Failed to open log file '" << fileLogger()->fileName() << "': " << fileLogger()->errorString();
         }
     }
+
+    QFont font("Microsoft YaHei", 10, 50);
+    qApp->setFont(font);
+
     Form custom;
     custom.show();
     return a.exec();

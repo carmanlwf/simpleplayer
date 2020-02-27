@@ -17,6 +17,9 @@ TitleWidget::TitleWidget(QWidget *parent) : QWidget(parent), ui(new Ui::TitleWid
     ui->labelTitle->setStyleSheet(style);
     ui->labelWeeked->setStyleSheet(style);
     ui->labelDataTime->setStyleSheet(style);
+
+    QFont font("Microsoft YaHei", 15, 50);
+    ui->labelTitle->setFont(font);
 }
 
 TitleWidget::~TitleWidget() {

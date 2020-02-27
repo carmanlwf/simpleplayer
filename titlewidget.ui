@@ -18,7 +18,7 @@
     <number>5</number>
    </property>
    <property name="topMargin">
-    <number>5</number>
+    <number>2</number>
    </property>
    <property name="rightMargin">
     <number>5</number>
@@ -26,7 +26,7 @@
    <property name="bottomMargin">
     <number>5</number>
    </property>
-   <item>
+   <item alignment="Qt::AlignVCenter">
     <widget class="QLabel" name="labelIcon">
      <property name="minimumSize">
       <size>
@@ -39,7 +39,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
     <widget class="QLabel" name="labelTitle">
      <property name="minimumSize">
       <size>
@@ -72,7 +72,7 @@
      </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
         <widget class="QLabel" name="labelDataTime">
          <property name="minimumSize">
           <size>
@@ -85,7 +85,7 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
         <widget class="QLabel" name="labelWeeked">
          <property name="minimumSize">
           <size>
@@ -109,13 +109,13 @@
         <widget class="QPushButton" name="pushButtonmin">
          <property name="minimumSize">
           <size>
-           <width>30</width>
+           <width>25</width>
            <height>25</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>30</width>
+           <width>25</width>
            <height>25</height>
           </size>
          </property>
@@ -140,13 +140,13 @@
         <widget class="QPushButton" name="pushButtonClose">
          <property name="minimumSize">
           <size>
-           <width>30</width>
+           <width>25</width>
            <height>25</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>30</width>
+           <width>25</width>
            <height>25</height>
           </size>
          </property>

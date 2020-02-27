@@ -55,29 +55,31 @@ PlayerWindow::PlayerWindow(QWidget *parent) : QWidget(parent) {
     dict.insert("rtsp_transport", "tcp");
     m_player->setOptionsForFormat(dict);
 
+    // qDebug() << "PlayerWindow::PlayerWindow  setVideoDecoderPriority" << m_player->videoDecoderPriority();
     QStringList strList;
     strList << "DXVA"
             << "D3D11"
             << "VAAPI"
             << "CUDA"
             << "FFmpeg";
-    m_player->setVideoDecoderPriority(strList);
+    // m_player->setVideoDecoderPriority(strList);
     //  m_player->setBufferMode(QtAV::BufferPackets);
 
     QVariantHash dec_opt(m_player->optionsForVideoCodec());
     dec_opt["copyMode"] = "OptimizedCopy"; // or "GenericCopy"
-    m_player->setOptionsForVideoCodec(dec_opt);
+    // m_player->setOptionsForVideoCodec(dec_opt);
 
     auto *vl = new QVBoxLayout();
     setLayout(vl);
-    vl->setMargin(2);
+    vl->setMargin(0);
 
-    setContentsMargins(2, 2, 2, 2);
+    setContentsMargins(1, 1, 1, 1);
     m_fileName = new QLabel(this);
     m_fileName->setVisible(false);
     m_fileName->setMaximumHeight(20);
     vl->addWidget(m_fileName);
-    VideoRenderer *vo = VideoRenderer::create(VideoRendererId_GLWidget2);
+    // VideoRenderer *vo = VideoRenderer::create(VideoRendererId_GLWidget2); // VideoRendererId_GLWidget2);
+    VideoOutput *vo = new VideoOutput(this);
     if (!vo->widget()) {
         QMessageBox::warning(nullptr, QString::fromLatin1("QtAV error"), tr("Can not create video renderer"));
         return;
@@ -122,13 +124,6 @@ PlayerWindow::PlayerWindow(QWidget *parent) : QWidget(parent) {
         }
     }
     // CreateMenu();
-
-    //    auto *ef = new EventFilter(m_player);
-    //    qApp->installEventFilter(ef);
-
-    //    auto *we = new WindowEventFilter(this);
-    //    installEventFilter(we);
-    //    connect(we, SIGNAL(fullscreenChanged()), SLOT(handleFullscreenChange()));
 }
 
 void PlayerWindow::playUrl(const QString &url) {
@@ -309,17 +304,6 @@ void PlayerWindow::onMenuActVideoFull() {
         showFullScreen();
     }
 
-    //    if (Qt::WindowFullScreen == windowState())
-    //    {
-    //       setWindowState(windowState() ^ Qt::WindowFullScreen);
-    //       setWindowFlags(Qt::SubWindow);
-    //       showNormal();
-    //    }
-    //    else
-    //    {
-    //       setWindowFlag(Qt::Dialog);
-    //       showFullScreen();
-    //    }
     this->updateGeometry();
     update();
     QSize s = rect().size();

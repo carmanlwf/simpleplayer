@@ -65,37 +65,10 @@
         <number>1</number>
        </property>
        <item>
-        <layout class="QGridLayout" name="gridLayout_2">
+        <layout class="QGridLayout" name="gridLayoutOne">
          <property name="spacing">
-          <number>2</number>
+          <number>1</number>
          </property>
-         <item row="0" column="1">
-          <widget class="PlayerWindow" name="widget_4" native="true"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="PlayerWindow" name="widget_8" native="true"/>
-         </item>
-         <item row="1" column="1">
-          <widget class="PlayerWindow" name="widget_10" native="true"/>
-         </item>
-         <item row="1" column="2">
-          <widget class="PlayerWindow" name="widget_11" native="true"/>
-         </item>
-         <item row="0" column="0">
-          <widget class="PlayerWindow" name="widget_12" native="true"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="PlayerWindow" name="widget_15" native="true"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="PlayerWindow" name="widget_16" native="true"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="PlayerWindow" name="widget_17" native="true"/>
-         </item>
-         <item row="2" column="2">
-          <widget class="PlayerWindow" name="widget_18" native="true"/>
-         </item>
         </layout>
        </item>
       </layout>
@@ -115,37 +88,10 @@
         <number>1</number>
        </property>
        <item>
-        <layout class="QGridLayout" name="gridLayout_3">
+        <layout class="QGridLayout" name="gridLayoutTwo">
          <property name="spacing">
-          <number>2</number>
+          <number>1</number>
          </property>
-         <item row="0" column="0">
-          <widget class="PlayerWindow" name="widget_23" native="true"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="PlayerWindow" name="widget_26" native="true"/>
-         </item>
-         <item row="0" column="1">
-          <widget class="PlayerWindow" name="widget_19" native="true"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="PlayerWindow" name="widget_24" native="true"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="PlayerWindow" name="widget_20" native="true"/>
-         </item>
-         <item row="1" column="1">
-          <widget class="PlayerWindow" name="widget_21" native="true"/>
-         </item>
-         <item row="1" column="2">
-          <widget class="PlayerWindow" name="widget_22" native="true"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="PlayerWindow" name="widget_25" native="true"/>
-         </item>
-         <item row="2" column="2">
-          <widget class="PlayerWindow" name="widget_27" native="true"/>
-         </item>
         </layout>
        </item>
       </layout>
@@ -155,12 +101,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>PlayerWindow</class>
-   <extends>QWidget</extends>
-   <header location="global">playerwindow.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>TitleWidget</class>
    <extends>QWidget</extends>
